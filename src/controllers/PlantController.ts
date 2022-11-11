@@ -27,6 +27,18 @@ class PlantController {
         .send({ status: "FAILED", data: { error: error?.message || error } });
     }
   }
+  async createOnePlant(req: Request, res: Response): Promise<void> {
+    const body = req.body;
+    console.log(body);
+    try {
+      const createPlant = await this.plantService.createOnePlant(body);
+      res.send({ status: "OK", data: createPlant });
+    } catch (error: any) {
+      res
+        .status(error?.status || 500)
+        .send({ status: "FAILED", data: { error: error?.message || error } });
+    }
+  }
 }
 
 export default PlantController;
