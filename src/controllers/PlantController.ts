@@ -16,8 +16,10 @@ class PlantController {
   }
 
   async getOnePlant(req: Request, res: Response): Promise<void> {
+    const paramId = req.params.id;
+
     try {
-      const onePlant = await this.plantService.getOnePlant();
+      const onePlant = await this.plantService.getOnePlant(Number(paramId));
       res.send({ status: "OK", data: onePlant });
     } catch (error: any) {
       res

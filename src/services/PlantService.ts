@@ -5,8 +5,9 @@ class PlantService {
   getAllPlants(): Promise<Plant[]> {
     return AppDataSource.query(`SELECT * FROM plant;`);
   }
-  getOnePlant(): Promise<Plant[]> {
-    return AppDataSource.query(`SELECT id FROM plant where ;`);
+  getOnePlant(id: number): Promise<Plant[]> {
+    console.log(id);
+    return AppDataSource.query(`SELECT * FROM plant where id=${id};`);
   }
 }
 
