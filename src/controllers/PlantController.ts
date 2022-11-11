@@ -17,7 +17,6 @@ class PlantController {
 
   async getOnePlant(req: Request, res: Response): Promise<void> {
     const paramId = req.params.id;
-
     try {
       const onePlant = await this.plantService.getOnePlant(Number(paramId));
       res.send({ status: "OK", data: onePlant });
@@ -33,6 +32,17 @@ class PlantController {
     try {
       const createPlant = await this.plantService.createOnePlant(body);
       res.send({ status: "OK", data: createPlant });
+    } catch (error: any) {
+      res
+        .status(error?.status || 500)
+        .send({ status: "FAILED", data: { error: error?.message || error } });
+    }
+  }
+  async deleteOnePlant(req: Request, res: Response): Promise<void> {
+    const paramId = req.params.id;
+    try {
+      const deletePlant = await this.plantService.deletePlant(Number(paramId));
+      res.send({ status: "OK", data: deletePlant });
     } catch (error: any) {
       res
         .status(error?.status || 500)
