@@ -20,6 +20,11 @@ class PlantService {
     console.log(id);
     return AppDataSource.query(`DELETE FROM plant where id=${id};`);
   }
+  updatePlant(id: number, body: Plant): Promise<Plant[]> {
+    return AppDataSource.query(`UPDATE plant
+SET name = '${body.name}', unitprice_ati = '${body.unitprice_ati}', quantity = '${body.quantity}', category = '${body.category}', url_picture = '${body.url_picture}'
+WHERE id=${id};`);
+  }
 }
 
 export default PlantService;

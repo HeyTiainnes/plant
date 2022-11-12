@@ -49,6 +49,21 @@ class PlantController {
         .send({ status: "FAILED", data: { error: error?.message || error } });
     }
   }
+  async updateOnePlant(req: Request, res: Response): Promise<void> {
+    const paramId = req.params.id;
+    const body = req.body;
+    try {
+      const updatePlant = await this.plantService.updatePlant(
+        Number(paramId),
+        body
+      );
+      res.send({ status: "OK", data: updatePlant });
+    } catch (error: any) {
+      res
+        .status(error?.status || 500)
+        .send({ status: "FAILED", data: { error: error?.message || error } });
+    }
+  }
 }
 
 export default PlantController;

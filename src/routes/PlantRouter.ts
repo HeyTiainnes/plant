@@ -11,4 +11,5 @@ plantRouter.post("/", (req, res) => plantController.createOnePlant(req, res));
 plantRouter.delete("/:id", (req, res) =>
   plantController.deleteOnePlant(req, res)
 );
+plantRouter.put("/:id", (req, res) => plantController.updateOnePlant(req, res));
 export default plantRouter;
