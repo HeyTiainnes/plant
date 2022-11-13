@@ -31,7 +31,8 @@ class PlantController {
     console.log(body);
     try {
       const createPlant = await this.plantService.createOnePlant(body);
-      res.send({ status: "OK", data: createPlant });
+      console.log(createPlant);
+      res.send({ status: "OK", data: body });
     } catch (error: any) {
       res
         .status(error?.status || 500)
@@ -42,7 +43,7 @@ class PlantController {
     const paramId = req.params.id;
     try {
       const deletePlant = await this.plantService.deletePlant(Number(paramId));
-      res.send({ status: "OK", data: deletePlant });
+      res.send({ status: "OK", data: `Plant with id : ${paramId} was Delete` });
     } catch (error: any) {
       res
         .status(error?.status || 500)
@@ -57,7 +58,7 @@ class PlantController {
         Number(paramId),
         body
       );
-      res.send({ status: "OK", data: updatePlant });
+      res.send({ status: "OK", data: body });
     } catch (error: any) {
       res
         .status(error?.status || 500)
