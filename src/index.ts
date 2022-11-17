@@ -1,9 +1,12 @@
-import * as express from "express";
+import express from "express";
 import AppDataSource from "./data-source";
 // import bodyParser = require("body-parser");
 import plantRouter from "./routes/PlantRouter";
-import * as cors from "cors";
-import path = require("path");
+import cors from "cors";
+import path from "path";
+import bcrypt from "bcrypt";
+import userRouter from "./routes/UserRouter";
+import jwt from "jsonwebtoken";
 
 AppDataSource.initialize()
   .then(() => {
@@ -23,6 +26,8 @@ AppDataSource.initialize()
     );
 
     app.use("/api/plant", plantRouter);
+    app.use("/api/plant/connect", userRouter);
+    // app.use("/api/plant/login", userRouter);
 
     app.listen(process.env.PORT, () => {
       console.log(

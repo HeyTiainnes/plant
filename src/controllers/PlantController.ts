@@ -35,7 +35,7 @@ class PlantController {
       res.send({ status: "OK", data: body });
     } catch (error: any) {
       res
-        .status(error?.status || 500)
+        .status(error?.status || 400)
         .send({ status: "FAILED", data: { error: error?.message || error } });
     }
   }

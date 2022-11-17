@@ -12,8 +12,8 @@ class PlantService {
   createOnePlant(body: Plant): Promise<Plant> {
     console.log(body);
     return AppDataSource.query(
-      `insert into plant (name, unitprice_ati, quantity, category, url_picture)
-       values ('${body.name}', '${body.unitprice_ati}', '${body.quantity}', '${body.category}', '${body.url_picture}');`
+      `insert into plant (name, unitprice_ati, quantity, category, rating, url_picture)
+       values ('${body.name}', ${body.unitprice_ati}, ${body.quantity}, '${body.category}', ${body.rating}, '${body.url_picture}');`
     );
   }
   deletePlant(id: number): Promise<Plant> {
