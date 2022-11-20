@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import UserService from "../services/UserService";
 import bcrypt from "bcrypt";
 import User from "../models/interfaces/UserInterface";
@@ -43,11 +43,21 @@ class UserController {
       );
       console.log(retourCompare);
       if (retourCompare) {
+        // creation token
         const token = jwt.sign(
           { email: req.body.email },
-          process.env.SECRET_KEY || "testSecretKey"
+          process.env.SECRET_KEY || "testSecretKey",
+          { expiresIn: 6000 }
         );
-        // res.json({ token, message: "TOKEN GENERATE" });
+        //test validité du token
+        if (token) {
+          const tokentest = jwt.verify(
+            token,
+            process.env.SECRET_KEY || "testSecretKey"
+          );
+          console.log(`test du token`, tokentest);
+        }
+
         res.send({ token, data: connectOneUser });
       } else {
         res.send({ message: "MDP incorrect" });
@@ -58,7 +68,30 @@ class UserController {
         .send({ status: "FAILED", data: { error: error?.message || error } });
     }
   }
+  // authenticateToken(req: Request, res: Response, next: NextFunction) {
+  //   console.log(req);
+  //   const authHeader = req.headers["authorization"];
+  //   const token = authHeader && authHeader.split(" ")[1];
 
+  //   if (token == null) return res.sendStatus(401);
+
+  //   jwt.verify(
+  //     token,
+  //     process.env.SECRET_KEY || "testSecretKey",
+  //     (err, user) => {
+  //       if (err) {
+  //         return res.sendStatus(401);
+  //       }
+
+  //       req.user = user;
+  //       next();
+  //     }
+  //   );
+  // }
+
+  // app.get('/api/me', authenticateToken, (req, res) => {
+  //   res.send(req.user);
+  // });
 }
 
 export default UserController;

@@ -7,6 +7,7 @@ import path from "path";
 import bcrypt from "bcrypt";
 import userRouter from "./routes/UserRouter";
 import jwt from "jsonwebtoken";
+import autToken from "../middleware/auth";
 
 AppDataSource.initialize()
   .then(() => {
@@ -25,8 +26,8 @@ AppDataSource.initialize()
       express.static(path.join(__dirname, "../public/assets"))
     );
 
-    app.use("/api/plant", plantRouter);
     app.use("/api/plant/connect", userRouter);
+    app.use("/api/plant", autToken, plantRouter);
     // app.use("/api/plant/login", userRouter);
 
     app.listen(process.env.PORT, () => {

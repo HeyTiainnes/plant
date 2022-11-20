@@ -1,4 +1,5 @@
 import { Router } from "express";
+import autToken from "../../middleware/auth";
 import PlantController from "../controllers/PlantController";
 
 const plantRouter = Router();
