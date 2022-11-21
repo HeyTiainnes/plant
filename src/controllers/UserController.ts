@@ -42,21 +42,18 @@ class UserController {
         connectOneUser[0].hash
       );
       console.log(retourCompare);
-      if (retourCompare) {
+      if (retourCompare && process.env.SECRET_KEY) {
         // creation token
         const token = jwt.sign(
           { email: req.body.email },
-          process.env.SECRET_KEY || "testSecretKey",
+          process.env.SECRET_KEY,
           { expiresIn: 6000 }
         );
         //test validité du token
-        if (token) {
-          const tokentest = jwt.verify(
-            token,
-            process.env.SECRET_KEY || "testSecretKey"
-          );
-          console.log(`test du token`, tokentest);
-        }
+        // if (token) {
+        //   const tokentest = jwt.verify(token, process.env.SECRET_KEY);
+        //   console.log(`test du token`, tokentest);
+        // }
 
         res.send({ token, data: connectOneUser });
       } else {
