@@ -4,10 +4,12 @@ import bcrypt from "bcrypt";
 import User from "../models/interfaces/UserInterface";
 import jwt from "jsonwebtoken";
 import * as dotenv from "dotenv";
+import jwt_decode from "jwt-decode";
 
 class UserController {
   public userService = new UserService();
 
+  // CREATION D'UN NOUVEL UTILISATEUR
   async createUser(req: Request, res: Response): Promise<void> {
     bcrypt.hash(req.body.hash, 12).then(async (crypt) => {
       const newUser: User = {
@@ -18,15 +20,23 @@ class UserController {
       try {
         const createOneUser = await this.userService.createUser(newUser);
 
-        res.send({ status: "OK", data: newUser });
+        res.send({
+          status: "OK",
+          data: newUser,
+          message: "Votre compte à été créé !! ",
+        });
       } catch (error: any) {
-        res
-          .status(error?.status || 400)
-          .send({ status: "FAILED", data: { error: error?.message || error } });
+        res.status(error?.status || 400).send({
+          status: "FAILED",
+          data: { error: error?.message || error },
+          message:
+            "erreur lors de la création de votre compte. Veuillez rensigner un email unique ainsi qu'un mot de passe.",
+        });
       }
     });
   }
 
+  // CONNEXION
   async connectUser(req: Request, res: Response): Promise<void> {
     const userConnect: User = {
       id: req.body.id,
@@ -35,8 +45,8 @@ class UserController {
     };
     try {
       const connectOneUser = await this.userService.connectUser(userConnect);
-      console.log(userConnect.hash);
-      console.log(connectOneUser);
+      // console.log(userConnect.hash);
+      // console.log(connectOneUser);
       const retourCompare = await bcrypt.compare(
         userConnect.hash,
         connectOneUser[0].hash
@@ -49,46 +59,27 @@ class UserController {
           process.env.SECRET_KEY,
           { expiresIn: "4h" }
         );
-        //test validité du token
-        // if (token) {
-        //   const tokentest = jwt.verify(token, process.env.SECRET_KEY);
-        //   console.log(`test du token`, tokentest);
-        // }
 
-        res.send({ token, data: connectOneUser });
+        let decoded = jwt_decode(token);
+        console.log(decoded);
+
+        res.send({
+          token,
+          decoded,
+          data: connectOneUser,
+          message: `Vous voila connecté !! `,
+        });
       } else {
-        res.send({ message: "MDP incorrect" });
+        res.send({ message: "le couple MDP/email est incorrect" });
       }
     } catch (error: any) {
-      res
-        .status(error?.status || 400)
-        .send({ status: "FAILED", data: { error: error?.message || error } });
+      res.status(error?.status || 400).send({
+        status: "FAILED",
+        data: { error: error?.message || error },
+        message: "erreur de connexion",
+      });
     }
   }
-  // authenticateToken(req: Request, res: Response, next: NextFunction) {
-  //   console.log(req);
-  //   const authHeader = req.headers["authorization"];
-  //   const token = authHeader && authHeader.split(" ")[1];
-
-  //   if (token == null) return res.sendStatus(401);
-
-  //   jwt.verify(
-  //     token,
-  //     process.env.SECRET_KEY || "testSecretKey",
-  //     (err, user) => {
-  //       if (err) {
-  //         return res.sendStatus(401);
-  //       }
-
-  //       req.user = user;
-  //       next();
-  //     }
-  //   );
-  // }
-
-  // app.get('/api/me', authenticateToken, (req, res) => {
-  //   res.send(req.user);
-  // });
 }
 
 export default UserController;

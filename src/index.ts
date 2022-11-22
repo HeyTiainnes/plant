@@ -27,7 +27,7 @@ AppDataSource.initialize()
     );
 
     app.use("/api/plant/connect", userRouter);
-    app.use("/api/plant", autToken, plantRouter);
+    app.use("/api/plant", plantRouter);
     // app.use("/api/plant/login", userRouter);
 
     app.listen(process.env.PORT, () => {
