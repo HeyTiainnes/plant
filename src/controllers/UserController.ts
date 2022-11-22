@@ -47,7 +47,7 @@ class UserController {
         const token = jwt.sign(
           { email: req.body.email },
           process.env.SECRET_KEY,
-          { expiresIn: 6000 }
+          { expiresIn: "4h" }
         );
         //test validité du token
         // if (token) {
