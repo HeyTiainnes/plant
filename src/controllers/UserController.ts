@@ -16,6 +16,7 @@ class UserController {
         id: req.body.id,
         email: req.body.email,
         hash: crypt,
+        autorisation: req.body.autorisation,
       };
       try {
         const createOneUser = await this.userService.createUser(newUser);
@@ -42,11 +43,14 @@ class UserController {
       id: req.body.id,
       email: req.body.email,
       hash: req.body.hash,
+      autorisation: req.body.autorisation,
     };
     try {
       const connectOneUser = await this.userService.connectUser(userConnect);
+      const findRole = await this.userService.findRole(userConnect);
       // console.log(userConnect.hash);
       // console.log(connectOneUser);
+      console.log("findrole ", findRole[0].autorisation);
       const retourCompare = await bcrypt.compare(
         userConnect.hash,
         connectOneUser[0].hash
@@ -55,7 +59,7 @@ class UserController {
       if (retourCompare && process.env.SECRET_KEY) {
         // creation token
         const token = jwt.sign(
-          { email: req.body.email },
+          { email: req.body.email, role: findRole[0].autorisation },
           process.env.SECRET_KEY,
           { expiresIn: "4h" }
         );
@@ -72,6 +76,20 @@ class UserController {
       } else {
         res.send({ message: "le couple MDP/email est incorrect" });
       }
+    } catch (error: any) {
+      res.status(error?.status || 400).send({
+        status: "FAILED",
+        data: { error: error?.message || error },
+        message: "erreur de connexion",
+      });
+    }
+  }
+
+  // ALL users
+  async allUser(req: Request, res: Response): Promise<void> {
+    try {
+      const allUsers = await this.userService.allUser();
+      res.status(200).send({ message: "all users", data: allUsers });
     } catch (error: any) {
       res.status(error?.status || 400).send({
         status: "FAILED",

@@ -5,8 +5,8 @@ class UserService {
   createUser(body: User): Promise<User> {
     console.log(body);
     return AppDataSource.query(
-      `insert into users (email, hash)
-       values ('${body.email}', '${body.hash}');`
+      `insert into users (email, hash, autorisation)
+       values ('${body.email}', '${body.hash}' , '${body.autorisation}');`
     );
   }
 
@@ -15,6 +15,16 @@ class UserService {
     return AppDataSource.query(
       `select hash from users where email = '${body.email}';`
     );
+  }
+
+  findRole(body: User): Promise<User[]> {
+    return AppDataSource.query(
+      `select autorisation from users where email = '${body.email}' ;`
+    );
+  }
+
+  allUser(): Promise<User[]> {
+    return AppDataSource.query(`select * from users;`);
   }
 }
 

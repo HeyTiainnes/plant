@@ -7,7 +7,6 @@ import path from "path";
 import bcrypt from "bcrypt";
 import userRouter from "./routes/UserRouter";
 import jwt from "jsonwebtoken";
-import autToken from "../middleware/auth";
 
 AppDataSource.initialize()
   .then(() => {

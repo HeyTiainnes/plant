@@ -5,7 +5,7 @@ import User from "../src/models/interfaces/UserInterface";
 
 dotenv.config({ path: ".env.local" });
 
-const autToken = (req: Request, res: Response, next: any) => {
+export const autToken = (req: Request, res: Response, next: any) => {
   const autHeader = req.headers["authorization"];
   const token = autHeader && autHeader.split(" ")[1];
 
@@ -16,7 +16,7 @@ const autToken = (req: Request, res: Response, next: any) => {
   if (process.env.SECRET_KEY) {
     jwt.verify(token, process.env.SECRET_KEY, (err: any, user: any) => {
       if (err) {
-        return res.send({ status: 401, message: "not verify " });
+        return res.send({ status: 401, message: "not verify" });
       }
       console.log("verifié");
       console.log(user);
@@ -25,4 +25,25 @@ const autToken = (req: Request, res: Response, next: any) => {
   }
 };
 
-export default autToken;
+export const isAdmin = (req: Request, res: Response, next: any) => {
+  const autHeader = req.headers["authorization"];
+  const token = autHeader && autHeader.split(" ")[1];
+
+  if (!token) {
+    return res.send({ status: 401, message: "pas de token" });
+  }
+
+  if (process.env.SECRET_KEY) {
+    jwt.verify(token, process.env.SECRET_KEY, (err: any, decoded: any) => {
+      if (err) {
+        return res.send({ status: 401, message: "not verify" });
+      }
+      if (decoded.role === "admin") {
+        console.log("payload dans le test isAdmin", decoded);
+        next();
+      } else {
+        res.send({ message: "only admin" });
+      }
+    });
+  }
+};
