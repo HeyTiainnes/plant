@@ -1,4 +1,4 @@
-import jwt from "jsonwebtoken";
+import jwt, { JsonWebTokenError, TokenExpiredError } from "jsonwebtoken";
 import dotenv from "dotenv";
 import { NextFunction, Request, Response } from "express";
 import User from "../src/models/interfaces/UserInterface";
@@ -16,7 +16,9 @@ export const autToken = (req: Request, res: Response, next: any) => {
   if (process.env.SECRET_KEY) {
     jwt.verify(token, process.env.SECRET_KEY, (err: any, user: any) => {
       if (err) {
-        return res.send({ status: 401, message: "not verify" });
+        console.log("----error verify ", err);
+        console.log("----error verify .name", err.name);
+        return res.send({ status: 401, message: "not verify", data: err });
       }
       console.log("verifié");
       console.log(user);
