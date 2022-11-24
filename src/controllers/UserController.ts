@@ -80,7 +80,7 @@ class UserController {
       res.status(error?.status || 400).send({
         status: "FAILED",
         data: { error: error?.message || error },
-        message: "erreur de connexion",
+        message: "le couple MDP/email est incorrect",
       });
     }
   }
